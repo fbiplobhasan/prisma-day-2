@@ -23,6 +23,21 @@ const createPost = async (req: Request, res: Response) => {
   }
 };
 
+const getAllPost = async (req: Request, res: Response) => {
+  try {
+    const { search } = req.query;
+    const searchString = typeof search === "string" ? search : undefined;
+    const tags = req.query.tags ? (req.query.tags as string).split(",") : [];
+
+    const result = await postService.getAllPost({ search: searchString, tags });
+
+    return res.status(200).json({ result });
+  } catch (error) {
+    res.status(400).send({ message: "Something went wrong" });
+  }
+};
+
 export const postController = {
   createPost,
+  getAllPost,
 };
