@@ -35,8 +35,8 @@ const getAllPost = async ({
   page: number;
   limit: number;
   skip: number;
-  sortOrder: string | undefined;
-  sortBy: string | undefined;
+  sortOrder: string;
+  sortBy: string;
 }) => {
   const andCondition: PostWhereInput[] = [];
   if (search) {
@@ -93,17 +93,39 @@ const getAllPost = async ({
     where: {
       AND: andCondition,
     },
-    orderBy:
-      sortBy && sortOrder
-        ? {
-            [sortBy]: sortOrder,
-          }
-        : { createdAd: "desc" },
+    orderBy: {
+      [sortBy]: sortOrder,
+    },
   });
-  return allPost;
+
+  const total = await prisma.post.count({
+    where: {
+      AND: andCondition,
+    },
+  });
+
+  return {
+    data: allPost,
+    pagination: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+};
+
+const getPostById = async (id: string) => {
+  const result = await prisma.post.findUnique({
+    where: {
+      id: id,
+    },
+  });
+  return result;
 };
 
 export const postService = {
   createPost,
   getAllPost,
+  getPostById,
 };
