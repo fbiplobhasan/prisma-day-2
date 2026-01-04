@@ -1,6 +1,7 @@
-import { CommentStatus } from "./../../../generated/prisma/enums";
+import { CommentStatus, PostStatus } from "./../../../generated/prisma/enums";
 import { PostWhereInput } from "../../../generated/prisma/models";
 import { prisma } from "../../lib/prisma";
+import { Post } from "../../../generated/prisma/client";
 
 const createPost = async (
   data: Omit<Post, "id" | "createdAt" | "updatedAt" | "authorId">,
