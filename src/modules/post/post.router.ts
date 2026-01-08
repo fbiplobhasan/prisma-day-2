@@ -12,6 +12,8 @@ router.get(
   postController.getMyPost
 );
 
+router.get("/stats", auth(UserRole.ADMIN), postController.getStats);
+
 router.get("/:id", postController.getPostById);
 
 router.post(
@@ -24,6 +26,12 @@ router.patch(
   "/:postId",
   auth(UserRole.ADMIN, UserRole.USER),
   postController.updatePost
+);
+
+router.delete(
+  "/:postId",
+  auth(UserRole.ADMIN, UserRole.USER),
+  postController.deletePost
 );
 
 export const postRouter: Router = router;
