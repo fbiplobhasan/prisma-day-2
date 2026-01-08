@@ -2,11 +2,10 @@ import { Request, Response } from "express";
 import { postService } from "./post.sevice";
 import { PostStatus } from "../../../generated/prisma/enums";
 import paginationSortingHelper from "../../helpers/paginationSortingHelper";
+import { UserRole } from "../../middlewares/auth";
 
 const createPost = async (req: Request, res: Response) => {
   try {
-    // console.log(req.user);
-
     const user = req.user;
     if (!user) {
       return res.status(403).json({
@@ -84,8 +83,55 @@ const getPostById = async (req: Request, res: Response) => {
   }
 };
 
+const getMyPost = async (req: Request, res: Response) => {
+  try {
+    const user = req.user as { id: string } | undefined;
+
+    if (!user?.id) {
+      return res.status(401).json({
+        message: "Unauthorized",
+      });
+    }
+
+    const result = await postService.getMyPost(user.id);
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Post fetch failed",
+    });
+  }
+};
+
+const updatePost = async (req: Request, res: Response) => {
+  try {
+    const user = req.user as { id: string; role: UserRole } | undefined;
+
+    if (!user?.id) {
+      return res.status(401).json({
+        message: "Unauthorized",
+      });
+    }
+    const { postId } = req.params;
+    const isAdmin = user.role === UserRole.ADMIN;
+    console.log(user);
+    const result = await postService.updatePost(
+      postId as string,
+      req.body,
+      user.id,
+      isAdmin
+    );
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(500).json({
+      message: "You are not the owner or creator of this post",
+    });
+  }
+};
+
 export const postController = {
   createPost,
   getAllPost,
   getPostById,
+  getMyPost,
+  updatePost,
 };

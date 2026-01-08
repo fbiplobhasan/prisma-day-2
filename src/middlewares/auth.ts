@@ -23,7 +23,6 @@ declare global {
 
 const auth = (...role: UserRole[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    // console.log("middleware checker...", role);
     const session = await betterAuth.api.getSession({
       headers: req.headers as any,
     });
@@ -53,7 +52,6 @@ const auth = (...role: UserRole[]) => {
       });
     }
     next();
-    console.log(session);
   };
 };
 

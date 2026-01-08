@@ -45,7 +45,6 @@ export const auth = betterAuth({
   emailVerification: {
     sendOnSignUp: true,
     sendVerificationEmail: async ({ user, url, token }, request) => {
-      // console.log({user, url, token});
       try {
         const verificationUrl = `${process.env.APP_URL}/verify-email?token=${token}`;
         const info = await transporter.sendMail({
@@ -66,9 +65,7 @@ export const auth = betterAuth({
   </div>
   `, // HTML body
         });
-        // console.log("message sent", info.messageId);
       } catch (err) {
-        console.log(err);
         throw err;
       }
     },

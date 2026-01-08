@@ -23,7 +23,7 @@ model Post {
   tags       String[]
   views      Int        @default(0)
   authorId   String //better auth
-  createdAd  DateTime   @default(now())
+  createdAt  DateTime   @default(now())
   updateAt   DateTime   @updatedAt
   comment    Comment[]
 
